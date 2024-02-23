@@ -1,0 +1,35 @@
+- name: Install OpenJDK
+  hosts: wlp_servers
+  become: yes  # Use 'become' to escalate privileges
+  vars_files:
+    - group_vars/all.yml  # Load variables from group_vars
+
+  tasks:
+    - name: Download OpenJDK from Nexus
+      ansible.builtin.get_url:
+        url: "{{ nexus_repository_url }}"
+        dest: "/tmp/openjdk-{{ openjdk_version }}-bin.zip"
+        mode: '0644'
+
+    - name: Create Java Directory
+      ansible.builtin.file:
+        path: "/usr/lib/jvm"
+        state: directory
+        mode: '0755'
+
+    - name: Unzip OpenJDK Archive
+      ansible.builtin.unarchive:
+        src: "/tmp/openjdk-{{ openjdk_version }}-bin.zip"
+        dest: "/usr/lib/jvm"
+        remote_src: yes
+        creates: "/usr/lib/jvm/jdk-{{ openjdk_version }}"  # Change this path according to the actual directory structure inside the ZIP
+
+    - name: Set OpenJDK alternatives
+      ansible.builtin.command:
+        cmd: "update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk-{{ openjdk_version }}/bin/java 100"
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+    - name: Set javac alternatives
+      ansible.builtin.command:
+        cmd: "update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/jdk-{{ openjdk_version }}/bin/javac 100"
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'

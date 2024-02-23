@@ -1,15 +1,17 @@
-<server description="new server">
-    <!-- Enable features -->
+<server description="{{ server_description }}">
+
     <featureManager>
-        {% for feature in wlp_features %}
+        {% for feature in liberty_features %}
         <feature>{{ feature }}</feature>
         {% endfor %}
     </featureManager>
-    
-    <!-- JDBC Configurations -->
-    {% for jdbc in jdbc_configs %}
-    <dataSource jndiName="{{ jdbc.jndiName }}" jdbcDriverRef="{{ jdbc.jdbcDriverRef }}">
-        <properties.derby.embedded databaseName="{{ jdbc.properties_derby_embedded.databaseName }}" createDatabase="{{ jdbc.properties_derby_embedded.createDatabase }}"/>
+
+    <httpEndpoint httpPort="{{ liberty_http_port }}" httpsPort="{{ liberty_https_port }}" id="defaultHttpEndpoint"/>
+
+    {% for jdbc in liberty_jdbc_configs %}
+    <dataSource jndiName="{{ jdbc.jndiName }}">
+        <jdbcDriver libraryRef="JDBCLib"/>
+        <properties databaseName="{{ jdbc.databaseName }}" serverName="{{ jdbc.serverName }}" portNumber="{{ jdbc.portNumber }}"/>
     </dataSource>
     {% endfor %}
     
