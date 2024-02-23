@@ -1,6 +1,5 @@
 - name: Install OpenJDK
   hosts: wlp_servers
-  become: yes  # Use 'become' to escalate privileges
   vars_files:
     - group_vars/all.yml  # Load variables from group_vars
 
