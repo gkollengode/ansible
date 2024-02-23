@@ -1,0 +1,23 @@
+- hosts: ihs
+  vars_files:
+    - group_vars/ihs.yml
+  tasks:
+    - name: Download IHS from Nexus
+      get_url:
+        url: "{{ nexus_repository_url }}/ihs-{{ ihs_version }}.zip"
+        dest: "/tmp/ihs.zip"
+    
+    - name: Unzip IHS
+      ansible.builtin.unarchive:
+        src: "/tmp/ihs.zip"
+        dest: "/opt"
+        remote_src: yes
+
+    - name: Configure httpd.conf from Template
+      template:
+        src: httpd.conf.j2
+        dest: "/opt/IHS/conf/httpd.conf"
+    
+    - name: Start IHS
+      command: "/opt/IHS/bin/apachectl start"
+

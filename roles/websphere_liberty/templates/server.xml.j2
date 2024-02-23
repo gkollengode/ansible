@@ -1,0 +1,21 @@
+<server description="new server">
+    <!-- Enable features -->
+    <featureManager>
+        {% for feature in wlp_features %}
+        <feature>{{ feature }}</feature>
+        {% endfor %}
+    </featureManager>
+    
+    <!-- JDBC Configurations -->
+    {% for jdbc in jdbc_configs %}
+    <dataSource jndiName="{{ jdbc.jndiName }}" jdbcDriverRef="{{ jdbc.jdbcDriverRef }}">
+        <properties.derby.embedded databaseName="{{ jdbc.properties_derby_embedded.databaseName }}" createDatabase="{{ jdbc.properties_derby_embedded.createDatabase }}"/>
+    </dataSource>
+    {% endfor %}
+    
+    <!-- HTTP Endpoint -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="{{ http_port }}"
+                  httpsPort="{{ https_port }}"/>
+</server>
+

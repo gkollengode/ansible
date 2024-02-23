@@ -1,0 +1,29 @@
+---
+- hosts: wlp_servers
+  vars_files:
+    - group_vars/wlp_servers.yml
+  tasks:
+    - name: Install OpenJDK
+      ansible.builtin.yum:
+        name: java-{{ openjdk_version }}-openjdk
+        state: present
+
+    - name: Download WebSphere Liberty from Nexus
+      get_url:
+        url: "{{ nexus_repository_url }}/websphere-liberty-{{ websphere_liberty_version }}.zip"
+        dest: "/tmp/websphere-liberty.zip"
+    
+    - name: Unzip WebSphere Liberty
+      ansible.builtin.unarchive:
+        src: "/tmp/websphere-liberty.zip"
+        dest: "/opt"
+        remote_src: yes
+    
+    - name: Configure server.xml from Template
+      template:
+        src: server.xml.j2
+        dest: "/opt/wlp/usr/servers/defaultServer/server.xml"
+    
+    - name: Start WebSphere Liberty
+      command: "/opt/wlp/bin/server start defaultServer"
+

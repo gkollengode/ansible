@@ -1,0 +1,24 @@
+---
+wlp_features:
+  - jdbc-4.2
+  - jndi-1.0
+  - mpConfig-1.3
+  - ssl-1.0
+
+jdbc_configs:
+  - name: "DataSource1"
+    jndiName: "jdbc/DS1"
+    jdbcDriverRef: "DerbyEmbedded_10.14"
+    properties_derby_embedded:
+      databaseName: "testDB1"
+      createDatabase: "create"
+  - name: "DataSource2"
+    jndiName: "jdbc/DS2"
+    jdbcDriverRef: "DerbyEmbedded_10.14"
+    properties_derby_embedded:
+      databaseName: "testDB2"
+      createDatabase: "create"
+
+http_port: 9080
+https_port: 9443
+

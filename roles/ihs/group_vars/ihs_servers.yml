@@ -1,0 +1,16 @@
+# webservers.yml
+ihs_version: "9.0.5.0"
+ldap_config:
+  url: "ldap://ldap.example.com:389"
+  baseDN: "dc=example,dc=com"
+  bindDN: "cn=admin,dc=example,dc=com"
+  bindPassword: "password"
+
+v_hosts:
+  - hostname: "vhost1.example.com"
+    port: 80
+  - hostname: "vhost2.example.com"
+    port: 443
+
+https_config_enabled: true
+

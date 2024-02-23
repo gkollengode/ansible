@@ -1,0 +1,23 @@
+- name: Download WebSphere Liberty from Nexus
+  get_url:
+    url: "https://nexus.example.com/repository/liberty-binaries/wlp-webProfile8-{{ websphere_liberty_version }}.zip"
+    dest: "/tmp/wlp-webProfile8-{{ websphere_liberty_version }}.zip"
+
+- name: Install WebSphere Liberty
+  unarchive:
+    src: "/tmp/wlp-webProfile8-{{ websphere_liberty_version }}.zip"
+    dest: "/opt"
+    remote_src: yes
+
+- name: Configure server.xml
+  template:
+    src: "templates/server.xml.j2"
+    dest: "/opt/wlp/usr/servers/defaultServer/server.xml"
+  notify: restart liberty
+
+- name: Deploy application
+  copy:
+    src: "{{ item }}"
+    dest: "/opt/wlp/usr/servers/defaultServer/dropins/"
+  loop: "{{ application_jars }}"
+

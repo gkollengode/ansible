@@ -1,0 +1,22 @@
+# IHS HTTP Server Config
+Listen 443
+
+{% for vhost in v_hosts %}
+<VirtualHost *:{{ vhost.port }}>
+    ServerName {{ vhost.hostname }}
+    {% if https_config_enabled %}
+    # HTTPS Config with LDAP
+    SSLEngine on
+    SSLCertificateFile "/path/to/certificate.crt"
+    SSLCertificateKeyFile "/path/to/private.key"
+    <Directory "/path/to/documentroot">
+        AuthType Basic
+        AuthName "LDAP Authentication"
+        AuthBasicProvider ldap
+        AuthLDAPURL "{{ ldap_url }}"
+        Require valid-user
+    </Directory>
+    {% endif %}
+</VirtualHost>
+{% endfor %}
+
